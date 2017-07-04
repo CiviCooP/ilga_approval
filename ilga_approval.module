@@ -1,0 +1,22 @@
+<?php
+
+function ilga_approval_views_api() {
+  return [
+    'api' => 3.0,
+    'path' => drupal_get_path('module', 'ilga_approval') . '/views',
+  ];
+}
+
+/*function ilga_approval_views_default_views() {
+  $files = file_scan_directory(drupal_get_path('module', 'ilga_approval') . '/views', '/.inc/');
+  $views = [];
+  civicrm_initialize();
+  foreach ($files as $filepath => $file) {
+    require $filepath;
+    if (isset($view)) {
+      $views[$view->name] = $view;
+    }
+  }
+  return $views;
+}*/
+
