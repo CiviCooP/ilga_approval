@@ -16,10 +16,18 @@ function ilga_approval_menu(){
     'page callback' => 'drupal_get_form',
     'page arguments' => array('ilga_approval_view_comments',2),
     'access callback' => 'user_access',
-    'access arguments' => array('ILGA board members'),
+    'access arguments' => array('use ilga approval'),
   );
-
   return $items;
+}
+
+function ilga_approval_permission() {
+  return array(
+    'use ilga approval' => array(
+      'title' => t('Use ILGA approval'),
+      'description' => t('Standard tasks for ILGA approval module'),
+    ),
+  );
 }
 
 /* hook_views_api() */
@@ -69,11 +77,13 @@ function ilga_approval_view_comments($form, &$form_state,$contactId) {
     $rows[$dao->activity_id]= $row;
   }
 
-
+  $orgname = civicrm_api3('Contact','getvalue',array(
+    'id' => $contactId,
+    'return' => 'display_name'
+  ));
 
   $form = array();
-  $form['case']['#type'] = 'textfield';
-  $form['case']['#default_value'] = "textfield ($contactId)";
+  $form['case']['#markup'] = "Applicant : $orgname";
 
   $form['comments']['table']['#theme'] = 'table';
   $form['comments']['table']['#header'] = [
