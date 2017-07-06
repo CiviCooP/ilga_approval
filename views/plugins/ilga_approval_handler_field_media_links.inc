@@ -1,9 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Klaas
- * Date: 21-6-2017
- * Time: 17:46
+ *  Drupal view handler for selecting facebook & website url
+ *  (The normal CiviCRM website view type creates a double row)
+ *
+ * @author Klaas Eikelboom (CiviCooP)
+ * @date 05 juli 2017
+ * @license AGPL-3.0
  */
 class ilga_approval_handler_field_media_links extends views_handler_field {
 

@@ -1,3 +1,6 @@
+; @author Klaas Eikelboom (CiviCooP)
+; @date 05 juli 2017
+; @license AGPL-3.0
 name = Ilga Approval
 description = Views and functions for the ILGA membership approval process.
 core = 7.x
@@ -6,9 +9,12 @@ package = Ilga
 dependencies[] = civicrm (>=4.7)
 dependencies[] = views
 
-; views handlers
-; files[] = views/ilga_approval.views.inc
-
 ; field handlers
 files[] = views/plugins/ilga_approval_handler_field_world_region.inc
 files[] = views/plugins/ilga_approval_handler_field_media_links.inc
+files[] = views/plugins/ilga_approval_handler_field_did_i_comment.inc
+files[] = views/plugins/ilga_approval_handler_field_approval_link.inc
+
+; general libraries
+files[] = includes/ilga_approval_config.inc
+files[] = includes/ilga_approval_utils.inc

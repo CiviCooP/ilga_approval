@@ -1,9 +1,10 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Klaas
- * Date: 21-6-2017
- * Time: 17:46
+ *  Drupal view handler for making for finding the world region
+ *
+ * @author Klaas Eikelboom (CiviCooP)
+ * @date 05 juli 2017
+ * @license AGPL-3.0
  */
 class ilga_approval_handler_field_world_region extends views_handler_field {
 
@@ -22,7 +23,6 @@ class ilga_approval_handler_field_world_region extends views_handler_field {
     return CRM_Core_DAO::singleValueQuery($sql,array(
       '1' => array($country_id,'Integer'),
     ));
-
   }
 
   function render($values) {
