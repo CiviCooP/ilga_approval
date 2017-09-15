@@ -8,12 +8,9 @@
  */
 class ilga_approval_utils {
 
-  static public function commentActivity($contactId){
-
-    civicrm_initialize();
-    $session = CRM_Core_Session::singleton();
+  static public function commentActivitySQL(){
     $config = ilga_approval_config::singleton();
-    $sql = "SELECT act.id AS activity_id
+    return "SELECT act.id AS activity_id
           ,      ad.{$config->getApproveDenyCustomFields()['Can_this_organisation_become_an_ILGA_member']} approvedeny
           FROM   civicrm_case cas
           JOIN   civicrm_case_contact cc     ON (cc.case_id = cas.id AND cc.contact_id=%1)
@@ -23,7 +20,13 @@ class ilga_approval_utils {
           JOIN   {$config->getApproveDenyCustomTable()} ad ON (ad.entity_id = act.id)
           where  cas.case_type_id = {$config->getApprovalCaseTypeId()}
          ";
-     $dao = CRM_Core_DAO::executeQuery($sql,array(
+  }
+
+  static public function commentActivity($contactId){
+
+    civicrm_initialize();
+    $session = CRM_Core_Session::singleton();
+    $dao = CRM_Core_DAO::executeQuery( ilga_approval_utils::commentActivitySQL(),array(
        '1' => array($contactId,'Integer'),
        '2' => array($session->get('userID'),'Integer')
      ));
