@@ -15,8 +15,8 @@ class ilga_approval_utils {
           FROM   civicrm_case cas
           JOIN   civicrm_case_contact cc     ON (cc.case_id = cas.id AND cc.contact_id=%1)
           JOIN   civicrm_case_activity cact  ON (cact.case_id = cas.id) 
-          JOIN   civicrm_activity      act   ON (act.id = cact.activity_id AND act.is_deleted=0 AND act.activity_type_id = {$config->getApprovalActivityTypeId()} )
-          JOIN   civicrm_activity_contact acc ON (acc.activity_id = act.id and acc.record_type_id=1 and acc.contact_id=%2)         
+          JOIN   civicrm_activity      act   ON (act.id = cact.activity_id AND act.is_deleted=0 AND act.activity_type_id = {$config->getApprovalActivityTypeId()} AND act.is_current_revision=1 )
+          JOIN   civicrm_activity_contact acc ON (acc.activity_id = act.id and acc.record_type_id=2 and acc.contact_id=%2)         
           JOIN   {$config->getApproveDenyCustomTable()} ad ON (ad.entity_id = act.id)
           where  cas.case_type_id = {$config->getApprovalCaseTypeId()}
          ";
