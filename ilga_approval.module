@@ -42,7 +42,6 @@ function ilga_approval_views_api() {
 function ilga_approval_view_comments($form, &$form_state,$contactId) {
 
   civicrm_initialize();
-  $activity_type_id = variable_get('ilga_approval_activity_type_id', '55');
   $config = ilga_approval_config::singleton();
   $sql = "SELECT act.id AS activity_id
           ,      act.activity_date_time AS activity_date_time
@@ -53,8 +52,8 @@ function ilga_approval_view_comments($form, &$form_state,$contactId) {
           FROM   civicrm_case cas
           JOIN   civicrm_case_contact cc     ON (cc.case_id = cas.id AND cc.contact_id=%1)
           JOIN   civicrm_case_activity cact  ON (cact.case_id = cas.id)
-          JOIN   civicrm_activity      act   ON (act.id = cact.activity_id AND act.is_deleted=0 AND act.activity_type_id ={$config->getApprovalActivityTypeId()})
-          JOIN   civicrm_activity_contact acc ON (acc.activity_id = act.id and acc.record_type_id=1)
+          JOIN   civicrm_activity      act   ON (act.id = cact.activity_id AND act.is_deleted=0 AND act.activity_type_id ={$config->getApprovalActivityTypeId()} AND act.is_current_revision=1)
+          JOIN   civicrm_activity_contact acc ON (acc.activity_id = act.id and acc.record_type_id=2)
           JOIN   civicrm_contact          cnt ON (acc.contact_id  = cnt.id)
           JOIN   {$config->getApproveDenyCustomTable()} ad ON (ad.entity_id = act.id)
           LEFT JOIN civicrm_email         email ON (email.contact_id=cnt.id AND email.is_primary=1)
