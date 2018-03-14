@@ -7,18 +7,58 @@
  * @license AGPL-3.0
  */
 
+const ILGA_APPLICATION_WEBFORM_NID = 'ilga_application_webform_nid';
+
 /* Hooks */
 /* hook_menu() */
-function ilga_approval_menu(){
-  $items = array();
-  $items['ilga_approval/view-comments/%'] = array(
-    'title' => 'View comments',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('ilga_approval_view_comments',2),
-    'access callback' => 'user_access',
-    'access arguments' => array('use ilga approval'),
-  );
-  return $items;
+function ilga_approval_menu()
+{
+    $items = array();
+    $items['admin/config/system/ilga-approval'] = [
+        'title' => 'ILGA custom module',
+        'description' => 'Configuration of the approval module',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => ['_ilga_approval_config_form'],
+        'access arguments' => ['access administration pages'],
+        'type' => MENU_NORMAL_ITEM,
+    ];
+    $items['ilga_approval/view-comments/%'] = array(
+        'title' => 'View comments',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('ilga_approval_view_comments', 2),
+        'access callback' => 'user_access',
+        'access arguments' => array('use ilga approval'),
+    );
+    return $items;
+}
+
+/**
+ * Admin form for the configuration of all the webforms that are
+ * part of this module
+ *
+ * @param $form
+ * @param $form_state
+ *
+ * @return mixed
+ * @throws \CiviCRM_API3_Exception
+ */
+function _ilga_approval_config_form($form, &$form_state)
+{
+
+    $query = db_query("SELECT nid, title FROM {node} WHERE type='webform'");
+    $webformOptions = [];
+    $records = $query->fetchAll();
+    foreach ($records as $record) {
+        $webformOptions[$record->nid] = $record->title;
+    }
+
+    $form[ILGA_APPLICATION_WEBFORM_NID] = [
+        "#title" => 'Select the webform, that must be used for the membership application',
+        '#type' => 'select',
+        '#options' => $webformOptions,
+        '#default_value' => variable_get(ILGA_APPLICATION_WEBFORM_NID, array_keys($webformOptions)[0]),
+    ];
+    return system_settings_form($form);
 }
 
 function ilga_approval_permission() {

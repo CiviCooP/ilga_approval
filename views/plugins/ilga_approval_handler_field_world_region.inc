@@ -26,8 +26,8 @@ class ilga_approval_handler_field_world_region extends views_handler_field {
   }
 
   function render($values) {
-    if(isset($values->civicrm_address_country_id)) {
-      return $this->wordRegionByCountry($values->civicrm_address_country_id);
+    if(isset($values->civicrm_address2_country_id)) {
+      return $this->wordRegionByCountry($values->civicrm_address2_country_id);
     } else {
       return 'No Address - No Region';
     }

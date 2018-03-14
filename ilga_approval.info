@@ -14,6 +14,7 @@ files[] = views/plugins/ilga_approval_handler_field_world_region.inc
 files[] = views/plugins/ilga_approval_handler_field_media_links.inc
 files[] = views/plugins/ilga_approval_handler_field_did_i_comment.inc
 files[] = views/plugins/ilga_approval_handler_field_approval_link.inc
+files[] = views/plugins/ilga_approval_handler_field_applicationform_link.inc
 
 ; general libraries
 files[] = includes/ilga_approval_config.inc

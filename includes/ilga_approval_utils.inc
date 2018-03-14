@@ -41,4 +41,17 @@ class ilga_approval_utils {
      }
   }
 
+    static public function webformSubmission($key)
+    {
+        $sid = db_query("
+          select ws.sid from webform_civicrm_submissions wcs
+          join webform_submissions ws on (ws.sid = wcs.sid)
+          where nid=:nid and wcs.contact_id like :key
+        ", array(
+            ':key' => $key.'%',
+            ':nid' => variable_get(ILGA_APPLICATION_WEBFORM_NID)
+        ))->fetchField(0);
+        return $sid;
+    }
+
 }

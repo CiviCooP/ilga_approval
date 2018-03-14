@@ -46,6 +46,14 @@
        'click sortable' => FALSE,
      ],
    ];
+     $data['ilga_approval']['applicationform_link'] = [
+         'title' => t('Approval'),
+         'help' => t('Link printing the  application form'),
+         'field' => [
+             'handler' => 'ilga_approval_handler_field_applicationform_link',
+             'click sortable' => FALSE,
+         ],
+     ];
    return $data;
  }
 
