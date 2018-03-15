@@ -30,7 +30,7 @@ class ilga_approval_handler_field_applicationform_link extends views_handler_fie
      $sid = ilga_approval_utils::webformSubmission($key);
      if($sid) {
          $url = "/print/{$nid}/submission/{$sid}";
-         return l($values->civicrm_contact_display_name, $url);
+         return l($values->civicrm_contact_display_name, $url,['target' => '_blank']);
      } else {
          return $values->civicrm_contact_display_name;
      }
