@@ -11,6 +11,9 @@ const ILGA_APPLICATION_WEBFORM_NID = 'ilga_application_webform_nid';
 
 /* Hooks */
 /* hook_menu() */
+/**
+ * @return array
+ */
 function ilga_approval_menu()
 {
     $items = array();
@@ -61,29 +64,46 @@ function _ilga_approval_config_form($form, &$form_state)
     return system_settings_form($form);
 }
 
-function ilga_approval_permission() {
-  return array(
-    'use ilga approval' => array(
-      'title' => t('Use ILGA approval'),
-      'description' => t('Standard tasks for ILGA approval module'),
-    ),
-  );
+/**
+ * Implements the permission hook
+ * @return array
+ */
+function ilga_approval_permission()
+{
+    return array(
+        'use ilga approval' => array(
+            'title' => t('Use ILGA approval'),
+            'description' => t('Standard tasks for ILGA approval module'),
+        ),
+    );
 }
 
 /* hook_views_api() */
-function ilga_approval_views_api() {
-  return [
-    'api' => 3.0,
-    'path' => drupal_get_path('module', 'ilga_approval') . '/views',
-  ];
+/**
+ * @return array
+ */
+function ilga_approval_views_api()
+{
+    return [
+        'api' => 3.0,
+        'path' => drupal_get_path('module', 'ilga_approval') . '/views',
+    ];
 }
 
 /* Helpers */
-function ilga_approval_view_comments($form, &$form_state,$contactId) {
+/**
+ * @param $form
+ * @param $form_state
+ * @param $contactId
+ * @return array
+ * @throws CiviCRM_API3_Exception
+ */
+function ilga_approval_view_comments($form, &$form_state, $contactId)
+{
 
-  civicrm_initialize();
-  $config = ilga_approval_config::singleton();
-  $sql = "SELECT act.id AS activity_id
+    civicrm_initialize();
+    $config = ilga_approval_config::singleton();
+    $sql = "SELECT act.id AS activity_id
           ,      act.activity_date_time AS activity_date_time
           ,      act.details AS activity_details
           ,      ad.{$config->getApproveDenyCustomFields()['Can_this_organisation_become_an_ILGA_member']} approvedeny
@@ -100,45 +120,49 @@ function ilga_approval_view_comments($form, &$form_state,$contactId) {
           WHERE  cas.case_type_id = {$config->getApprovalCaseTypeId()}
          ";
 
-  $dao = CRM_Core_DAO::executeQuery($sql, [
-    '1' => [$contactId, 'Integer'],
-  ]);
+    $dao = CRM_Core_DAO::executeQuery($sql, [
+        '1' => [$contactId, 'Integer'],
+    ]);
 
-  $rows = [];
-  while ($dao->fetch()) {
-    $row = array(
-      'activity_date_time' => $dao->activity_date_time,
-      'activity_details' => $dao->activity_details,
-      'verdict' => $dao->approvedeny?'Yes':'No',
-      'display_name' => $dao->display_name,
-      'email' => $dao->email
-    );
-    $rows[$dao->activity_id]= $row;
-  }
+    $rows = [];
+    while ($dao->fetch()) {
+        $row = array(
+            'activity_date_time' => $dao->activity_date_time,
+            'activity_details' => $dao->activity_details,
+            'verdict' => $dao->approvedeny ? 'Yes' : 'No',
+            'display_name' => $dao->display_name,
+            'email' => $dao->email
+        );
+        $rows[$dao->activity_id] = $row;
+    }
 
-  $orgname = civicrm_api3('Contact','getvalue',array(
-    'id' => $contactId,
-    'return' => 'display_name'
-  ));
+    $orgname = civicrm_api3('Contact', 'getvalue', array(
+        'id' => $contactId,
+        'return' => 'display_name'
+    ));
 
-  $form = array();
-  $form['case']['#markup'] = "Applicant : $orgname";
+    $form = array();
+    $form['case']['#markup'] = "Applicant : $orgname";
 
-  $form['comments']['table']['#theme'] = 'table';
-  $form['comments']['table']['#header'] = [
-    'Date','Details','Agreement','Board Member','Email Board Member'
-  ];
-  $form['comments']['table']['#rows'] = $rows;
-  $form['comments']['table']['#attributes'] = array('width' => '100%');
+    $form['comments']['table']['#theme'] = 'table';
+    $form['comments']['table']['#header'] = [
+        'Date', 'Details', 'Agreement', 'Board Member', 'Email Board Member'
+    ];
+    $form['comments']['table']['#rows'] = $rows;
+    $form['comments']['table']['#attributes'] = array('width' => '100%');
 
-  $form['submit']['#type'] = 'submit';
-  $form['submit']['#value'] = 'Back to approval view';
-  $form['submit']['#submit'] = array('_ilga_approval_view_comments_submit');
-  return $form;
+    $form['submit']['#type'] = 'submit';
+    $form['submit']['#value'] = 'Back to approval view';
+    $form['submit']['#submit'] = array('_ilga_approval_view_comments_submit');
+    return $form;
 }
 
-function _ilga_approval_view_comments_submit(){
-  drupal_goto('pending-member-organisations');
+/**
+ *
+ */
+function _ilga_approval_view_comments_submit()
+{
+    drupal_goto('pending-member-organisations');
 }
 
 

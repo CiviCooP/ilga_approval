@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Helper and utility functions
  *
@@ -6,11 +7,18 @@
  * @date 05 juli 2017
  * @license AGPL-3.0
  */
-class ilga_approval_utils {
+class ilga_approval_utils
+{
 
-  static public function commentActivitySQL(){
-    $config = ilga_approval_config::singleton();
-    return "SELECT act.id AS activity_id
+    /**
+     * sql template string to find the correct comment activity for case and an approver
+     * (Case is found with contact id)
+     * @return string
+     */
+    static public function commentActivitySQL()
+    {
+        $config = ilga_approval_config::singleton();
+        return "SELECT act.id AS activity_id
           ,      ad.{$config->getApproveDenyCustomFields()['Can_this_organisation_become_an_ILGA_member']} approvedeny
           FROM   civicrm_case cas
           JOIN   civicrm_case_contact cc     ON (cc.case_id = cas.id AND cc.contact_id=%1)
@@ -20,35 +28,44 @@ class ilga_approval_utils {
           JOIN   {$config->getApproveDenyCustomTable()} ad ON (ad.entity_id = act.id)
           where  cas.case_type_id = {$config->getApprovalCaseTypeId()}
          ";
-  }
+    }
 
-  static public function commentActivity($contactId){
+    /**
+     * @param $contactId
+     * @return array|bool the results of an approval activity
+     */
+    static public function commentActivity($contactId)
+    {
 
-    civicrm_initialize();
-    $session = CRM_Core_Session::singleton();
-    $dao = CRM_Core_DAO::executeQuery( ilga_approval_utils::commentActivitySQL(),array(
-       '1' => array($contactId,'Integer'),
-       '2' => array($session->get('userID'),'Integer')
-     ));
+        civicrm_initialize();
+        $session = CRM_Core_Session::singleton();
+        $dao = CRM_Core_DAO::executeQuery(ilga_approval_utils::commentActivitySQL(), array(
+            '1' => array($contactId, 'Integer'),
+            '2' => array($session->get('userID'), 'Integer')
+        ));
 
-     if($dao->fetch()){
-       return array(
-         'activity_id' => $dao->activity_id,
-         'approvedeny' => $dao->approvedeny
-       );
-     } else {
-       return FALSE;
-     }
-  }
+        if ($dao->fetch()) {
+            return array(
+                'activity_id' => $dao->activity_id,
+                'approvedeny' => $dao->approvedeny
+            );
+        } else {
+            return FALSE;
+        }
+    }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     static public function webformSubmission($key)
     {
         $sid = db_query("
-          select ws.sid from webform_civicrm_submissions wcs
-          join webform_submissions ws on (ws.sid = wcs.sid)
-          where nid=:nid and wcs.contact_id like :key
+          SELECT ws.sid FROM webform_civicrm_submissions wcs
+          JOIN webform_submissions ws ON (ws.sid = wcs.sid)
+          WHERE nid=:nid AND wcs.contact_id LIKE :key
         ", array(
-            ':key' => $key.'%',
+            ':key' => $key . '%',
             ':nid' => variable_get(ILGA_APPLICATION_WEBFORM_NID)
         ))->fetchField(0);
         return $sid;
