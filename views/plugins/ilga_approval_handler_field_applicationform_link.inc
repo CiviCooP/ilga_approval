@@ -25,7 +25,7 @@ class ilga_approval_handler_field_applicationform_link extends views_handler_fie
 
   function render($values) {
 
-     $key = "-{$values->civicrm_contact_id}-{$values->civicrm_contact_civicrm_relationship_1_id}-";
+     $key = "-{$values->civicrm_contact_civicrm_relationship_1_id}-{$values->civicrm_contact_id}-";
      $nid = variable_get(ILGA_APPLICATION_WEBFORM_NID);
      $sid = ilga_approval_utils::webformSubmission($key);
      if($sid) {
