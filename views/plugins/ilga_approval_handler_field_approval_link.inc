@@ -46,18 +46,14 @@ class ilga_approval_handler_field_approval_link extends views_handler_field
     function render($values)
     {
 
-        $query = array(
-            'cid1' => $this->currentUser(),
-            'cid2' => $values->civicrm_contact_id);
+        $query = "cid1={$this->currentUser()}&cid2={$values->civicrm_contact_id}";
 
         $result = ilga_approval_utils::commentActivity($values->civicrm_contact_id);
         if ($result) {
-            $query['activity1'] = $result['activity_id'];
+            $query .= "&activity1={$result['activity_id']}";
         }
-        return l('Approve', "node/22", array(
-                "query" => $query
-            )
-        );
+        return $query;
+
     }
 
 }
