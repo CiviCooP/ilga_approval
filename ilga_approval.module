@@ -151,18 +151,8 @@ function ilga_approval_view_comments($form, &$form_state, $contactId)
     $form['comments']['table']['#rows'] = $rows;
     $form['comments']['table']['#attributes'] = array('width' => '100%');
 
-    $form['submit']['#type'] = 'submit';
-    $form['submit']['#value'] = 'Back to approval view';
-    $form['submit']['#submit'] = array('_ilga_approval_view_comments_submit');
-    return $form;
-}
 
-/**
- *
- */
-function _ilga_approval_view_comments_submit()
-{
-    drupal_goto('pending-member-organisations');
+    return $form;
 }
 
 
