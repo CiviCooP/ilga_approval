@@ -61,8 +61,8 @@ class ilga_approval_utils
     static public function webformSubmission($key)
     {
         $sid = db_query("
-          SELECT ws.sid FROM webform_civicrm_submissions wcs
-          JOIN webform_submissions ws ON (ws.sid = wcs.sid)
+          SELECT ws.sid FROM {webform_civicrm_submissions} wcs
+          JOIN {webform_submissions} ws ON (ws.sid = wcs.sid)
           WHERE nid=:nid AND wcs.contact_id LIKE :key
         ", array(
             ':key' => $key . '%',
