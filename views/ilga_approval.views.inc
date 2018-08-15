@@ -22,6 +22,9 @@ function ilga_approval_views_data()
             'handler' => 'ilga_approval_handler_field_world_region',
             'click sortable' => TRUE,
         ],
+        'filter' => [
+            'handler' => 'ilga_approval_handler_filter_world_region',
+        ]
     ];
     $data['ilga_approval']['media_links'] = [
         'title' => t('Media Links'),
