@@ -58,7 +58,7 @@ class ilga_approval_utils
      * @param $key
      * @return mixed
      */
-    static public function webformSubmission($key)
+    static public function webformSubmission($key,$nid)
     {
         $sid = db_query("
           SELECT ws.sid FROM {webform_civicrm_submissions} wcs
@@ -66,7 +66,7 @@ class ilga_approval_utils
           WHERE nid=:nid AND wcs.contact_id LIKE :key
         ", array(
             ':key' => $key . '%',
-            ':nid' => variable_get(ILGA_APPLICATION_WEBFORM_NID)
+            ':nid' => $nid
         ))->fetchField(0);
         return $sid;
     }

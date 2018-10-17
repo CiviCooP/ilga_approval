@@ -48,7 +48,12 @@ class ilga_approval_handler_field_applicationform_link extends views_handler_fie
 
         $key = "-{$values->civicrm_contact_civicrm_relationship_1_id}-{$values->civicrm_contact_id}-";
         $nid = variable_get(ILGA_APPLICATION_WEBFORM_NID);
-        $sid = ilga_approval_utils::webformSubmission($key);
+        $sid = ilga_approval_utils::webformSubmission($key,$nid);
+        // if the english submission cannot be found - searcg for the spanish one
+        if(empty($sid)){
+          $nid = variable_get(ILGA_APPLICATION_WEBFORM_NID_SP);
+          $sid = ilga_approval_utils::webformSubmission($key,$nid);
+        }
         if ($sid) {
             $url = "/print/{$nid}/submission/{$sid}";
             return l($values->civicrm_contact_display_name, $url, ['attributes' => ['target' => '_blank']]);
